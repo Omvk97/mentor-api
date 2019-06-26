@@ -1,11 +1,13 @@
 using System.Linq;
 using System.Threading.Tasks;
-using mentor_backend.Data;
+using mentor_api.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace mentor_backend.Controllers
+namespace mentor_api.Controllers
 {
+    [Authorize]
     [Route("api/mentors")]
     [ApiController]
     public class MentorsController : ControllerBase

@@ -1,24 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace mentor_backend.Migrations
+namespace mentor_API.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class User : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Mentors",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(nullable: true),
+                    Username = table.Column<string>(nullable: true),
+                    PasswordHash = table.Column<byte[]>(nullable: true),
+                    PasswordSalt = table.Column<byte[]>(nullable: true),
+                    Discriminator = table.Column<string>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     TeachingInformation = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Mentors", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -34,9 +39,9 @@ namespace mentor_backend.Migrations
                 {
                     table.PrimaryKey("PK_Prices", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Prices_Mentors_Id",
+                        name: "FK_Prices_Users_Id",
                         column: x => x.Id,
-                        principalTable: "Mentors",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -48,7 +53,7 @@ namespace mentor_backend.Migrations
                 name: "Prices");
 
             migrationBuilder.DropTable(
-                name: "Mentors");
+                name: "Users");
         }
     }
 }

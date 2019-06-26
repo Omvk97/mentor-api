@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace mentor_backend.Models
+namespace mentor_api.Models
 {
     public class Price
     {

@@ -1,9 +1,7 @@
-namespace mentor_backend.Models
+namespace mentor_api.Models
 {
-    public class Mentor
+    public class Mentor : User
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
         public string Description { get; set; }
         public string TeachingInformation { get; set; }
         public Price Price { get; set; }
