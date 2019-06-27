@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace mentor_API.Migrations
 {
-    public partial class User : Migration
+    public partial class nameRequired : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,8 +13,8 @@ namespace mentor_API.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true),
-                    Username = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: false),
+                    Email = table.Column<string>(nullable: false),
                     PasswordHash = table.Column<byte[]>(nullable: true),
                     PasswordSalt = table.Column<byte[]>(nullable: true),
                     Discriminator = table.Column<string>(nullable: false),

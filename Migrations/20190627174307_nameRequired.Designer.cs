@@ -9,8 +9,8 @@ using mentor_api.Data;
 namespace mentor_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190626105411_User")]
-    partial class User
+    [Migration("20190627174307_nameRequired")]
+    partial class nameRequired
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -41,13 +41,15 @@ namespace mentor_API.Migrations
                     b.Property<string>("Discriminator")
                         .IsRequired();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Email")
+                        .IsRequired();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.Property<byte[]>("PasswordHash");
 
                     b.Property<byte[]>("PasswordSalt");
-
-                    b.Property<string>("Username");
 
                     b.HasKey("Id");
 

@@ -27,18 +27,19 @@ namespace mentor_api.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDTO userForRegisterDTO)
         {
-            userForRegisterDTO.Username = userForRegisterDTO.Username.ToLower();
-            if (await _repo.UserExists(userForRegisterDTO.Username))
+            userForRegisterDTO.Email = userForRegisterDTO.Email.ToLower();
+            if (await _repo.UserExists(userForRegisterDTO.Email))
             {
-                return BadRequest("Username already exits");
+                return BadRequest("User already exits");
             }
 
             var userToCreate = new User
             {
-                Username = userForRegisterDTO.Username
+                Email = userForRegisterDTO.Email,
+                Name = userForRegisterDTO.Name
             };
 
-            var createdUSer = await _repo.Register(userToCreate, userForRegisterDTO.Password);
+            var createdUser = await _repo.Register(userToCreate, userForRegisterDTO.Password);
 
             return StatusCode(201);
         }
@@ -47,7 +48,7 @@ namespace mentor_api.Controllers
         public async Task<IActionResult> Login(UserForLoginDTO userForLoginDTO)
         {
             // User exists in the database check
-            var userFromRepo = await _repo.Login(userForLoginDTO.Username.ToLower(), userForLoginDTO.Password);
+            var userFromRepo = await _repo.Login(userForLoginDTO.Email.ToLower(), userForLoginDTO.Password);
 
             if (userFromRepo == null)
                 return Unauthorized();
@@ -55,7 +56,7 @@ namespace mentor_api.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.Username)
+                new Claim(ClaimTypes.Name, userFromRepo.Email)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(

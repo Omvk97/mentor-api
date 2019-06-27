@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading.Tasks;
 using mentor_api.Data;
 using Microsoft.AspNetCore.Authorization;
