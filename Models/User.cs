@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace mentor_api.Models
@@ -11,5 +12,8 @@ namespace mentor_api.Models
         public string Email { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
+        public DateTime Created { get; set; }
+        public DateTime LastActive { get; set; }
+        
     }
 }

@@ -56,7 +56,8 @@ namespace mentor_api.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.Email)
+                new Claim(ClaimTypes.Name, userFromRepo.Name),
+                new Claim(ClaimTypes.Email, userFromRepo.Email)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(

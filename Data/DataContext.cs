@@ -8,7 +8,23 @@ namespace mentor_api.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         public DbSet<Mentor> Mentors { get; set; }
         public DbSet<Price> Prices { get; set; }
+        public DbSet<Picture> Pictures { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<City> Cities { get; set; }
+        public DbSet<MentorCity> MentorCities { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<MentorCity>()
+            .HasKey(mc => new { mc.MentorId, mc.CityId});
+            modelBuilder.Entity<MentorCity>()
+            .HasOne(mc => mc.Mentor)
+            .WithMany(m => m.MentorCities)
+            .HasForeignKey(mc => mc.MentorId);
+            modelBuilder.Entity<MentorCity>()
+            .HasOne(mc => mc.City)
+            .WithMany(c => c.MentorCities)
+            .HasForeignKey(mc => mc.CityId);
+        }
     }
 }
