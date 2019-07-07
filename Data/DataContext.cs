@@ -12,11 +12,13 @@ namespace mentor_api.Data
         public DbSet<User> Users { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<MentorCity> MentorCities { get; set; }
-
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Specialization> Specialization { get; set; }
+        public DbSet<TeachingSpecialization> TeachingSpecializations { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MentorCity>()
-            .HasKey(mc => new { mc.MentorId, mc.CityId});
+            .HasKey(mc => new { mc.MentorId, mc.CityId });
             modelBuilder.Entity<MentorCity>()
             .HasOne(mc => mc.Mentor)
             .WithMany(m => m.MentorCities)
