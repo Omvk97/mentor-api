@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using mentor_api.Models;
 using Microsoft.EntityFrameworkCore;

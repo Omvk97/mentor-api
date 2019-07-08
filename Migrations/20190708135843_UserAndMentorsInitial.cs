@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace mentor_API.Migrations
 {
-    public partial class UserAndMentorModelsExtended : Migration
+    public partial class UserAndMentorsInitial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,11 +13,12 @@ namespace mentor_API.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.Id);
+                    table.UniqueConstraint("AK_Categories_Name", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -27,11 +28,12 @@ namespace mentor_API.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(nullable: true),
-                    PostalCode = table.Column<string>(nullable: true)
+                    PostalCode = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Cities", x => x.Id);
+                    table.UniqueConstraint("AK_Cities_PostalCode", x => x.PostalCode);
                 });
 
             migrationBuilder.CreateTable(
@@ -40,11 +42,12 @@ namespace mentor_API.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Specialization", x => x.Id);
+                    table.UniqueConstraint("AK_Specialization_Name", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,30 +85,6 @@ namespace mentor_API.Migrations
                         name: "FK_Mentors_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MentorCities",
-                columns: table => new
-                {
-                    MentorId = table.Column<int>(nullable: false),
-                    CityId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MentorCities", x => new { x.MentorId, x.CityId });
-                    table.ForeignKey(
-                        name: "FK_MentorCities_Cities_CityId",
-                        column: x => x.CityId,
-                        principalTable: "Cities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MentorCities_Mentors_MentorId",
-                        column: x => x.MentorId,
-                        principalTable: "Mentors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -157,9 +136,9 @@ namespace mentor_API.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Price30Min = table.Column<double>(nullable: false),
-                    Price45Min = table.Column<double>(nullable: false),
-                    Price60Min = table.Column<double>(nullable: false),
+                    Price30Min = table.Column<int>(nullable: false),
+                    Price45Min = table.Column<int>(nullable: false),
+                    Price60Min = table.Column<int>(nullable: false),
                     MentorId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -174,14 +153,38 @@ namespace mentor_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TeachableCities",
+                columns: table => new
+                {
+                    MentorId = table.Column<int>(nullable: false),
+                    CityId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeachableCities", x => new { x.MentorId, x.CityId });
+                    table.ForeignKey(
+                        name: "FK_TeachableCities_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TeachableCities_Mentors_MentorId",
+                        column: x => x.MentorId,
+                        principalTable: "Mentors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TeachingSpecializations",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    CategoryId = table.Column<int>(nullable: true),
-                    SpecializationId = table.Column<int>(nullable: true),
-                    MentorId = table.Column<int>(nullable: true)
+                    CategoryId = table.Column<int>(nullable: false),
+                    SpecializationId = table.Column<int>(nullable: false),
+                    MentorId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -191,25 +194,20 @@ namespace mentor_API.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TeachingSpecializations_Mentors_MentorId",
                         column: x => x.MentorId,
                         principalTable: "Mentors",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TeachingSpecializations_Specialization_SpecializationId",
                         column: x => x.SpecializationId,
                         principalTable: "Specialization",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MentorCities_CityId",
-                table: "MentorCities",
-                column: "CityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Mentors_UserId",
@@ -234,6 +232,11 @@ namespace mentor_API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_TeachableCities_CityId",
+                table: "TeachableCities",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TeachingSpecializations_CategoryId",
                 table: "TeachingSpecializations",
                 column: "CategoryId");
@@ -252,9 +255,6 @@ namespace mentor_API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "MentorCities");
-
-            migrationBuilder.DropTable(
                 name: "Phone");
 
             migrationBuilder.DropTable(
@@ -262,6 +262,9 @@ namespace mentor_API.Migrations
 
             migrationBuilder.DropTable(
                 name: "Prices");
+
+            migrationBuilder.DropTable(
+                name: "TeachableCities");
 
             migrationBuilder.DropTable(
                 name: "TeachingSpecializations");

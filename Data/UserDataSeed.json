@@ -1,0 +1,37 @@
+[
+  {
+    "Name": "Joyner Bowman",
+    "Email": "joynerbowman@qualitern.com",
+    "Password": "Password1",
+    "Created": "2018-03-09",
+    "LastActive": "2018-03-09"
+  },
+  {
+    "Name": "Kelsey Weber",
+    "Email": "kelseyweber@qualitern.com",
+    "Password": "Password1",
+    "Created": "2017-03-17",
+    "LastActive": "2017-03-17"
+  },
+  {
+    "Name": "Dean Hayden",
+    "Email": "deanhayden@qualitern.com",
+    "Password": "Password1",
+    "Created": "2018-03-20",
+    "LastActive": "2018-03-20"
+  },
+  {
+    "Name": "Keith Gentry",
+    "Email": "keithgentry@qualitern.com",
+    "Password": "Password1",
+    "Created": "2019-06-05",
+    "LastActive": "2019-06-05"
+  },
+  {
+    "Name": "Fleming Newman",
+    "Email": "flemingnewman@qualitern.com",
+    "Password": "Password1",
+    "Created": "2017-10-22",
+    "LastActive": "2017-10-22"
+  }
+]

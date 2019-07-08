@@ -11,7 +11,7 @@ namespace mentor_api.Models
         public string TeachingInformation { get; set; }
         public Price Price { get; set; }
         public Picture ProfilePicture { get; set; }
-        public ICollection<MentorCity> MentorCities { get; set; }
+        public ICollection<TeachableCities> TeachableCities { get; set; }
         public ICollection<TeachingSpecialization> TeachingSpecializations { get; set; }
         public ICollection<Phone> PhoneNumbers { get; set; }
     }

@@ -9,8 +9,8 @@ using mentor_api.Data;
 namespace mentor_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190707115234_UserAndMentorModelsExtended")]
-    partial class UserAndMentorModelsExtended
+    [Migration("20190708135843_UserAndMentorsInitial")]
+    partial class UserAndMentorsInitial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,9 +23,12 @@ namespace mentor_API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Name");
 
                     b.ToTable("Categories");
                 });
@@ -37,9 +40,12 @@ namespace mentor_API.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("PostalCode");
+                    b.Property<string>("PostalCode")
+                        .IsRequired();
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("PostalCode");
 
                     b.ToTable("Cities");
                 });
@@ -60,19 +66,6 @@ namespace mentor_API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Mentors");
-                });
-
-            modelBuilder.Entity("mentor_api.Models.MentorCity", b =>
-                {
-                    b.Property<int>("MentorId");
-
-                    b.Property<int>("CityId");
-
-                    b.HasKey("MentorId", "CityId");
-
-                    b.HasIndex("CityId");
-
-                    b.ToTable("MentorCities");
                 });
 
             modelBuilder.Entity("mentor_api.Models.Phone", b =>
@@ -118,11 +111,11 @@ namespace mentor_API.Migrations
 
                     b.Property<int>("MentorId");
 
-                    b.Property<double>("Price30Min");
+                    b.Property<int>("Price30Min");
 
-                    b.Property<double>("Price45Min");
+                    b.Property<int>("Price45Min");
 
-                    b.Property<double>("Price60Min");
+                    b.Property<int>("Price60Min");
 
                     b.HasKey("Id");
 
@@ -137,11 +130,27 @@ namespace mentor_API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
+                    b.HasAlternateKey("Name");
+
                     b.ToTable("Specialization");
+                });
+
+            modelBuilder.Entity("mentor_api.Models.TeachableCities", b =>
+                {
+                    b.Property<int>("MentorId");
+
+                    b.Property<int>("CityId");
+
+                    b.HasKey("MentorId", "CityId");
+
+                    b.HasIndex("CityId");
+
+                    b.ToTable("TeachableCities");
                 });
 
             modelBuilder.Entity("mentor_api.Models.TeachingSpecialization", b =>
@@ -149,11 +158,11 @@ namespace mentor_API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("CategoryId");
+                    b.Property<int>("CategoryId");
 
-                    b.Property<int?>("MentorId");
+                    b.Property<int>("MentorId");
 
-                    b.Property<int?>("SpecializationId");
+                    b.Property<int>("SpecializationId");
 
                     b.HasKey("Id");
 
@@ -198,19 +207,6 @@ namespace mentor_API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("mentor_api.Models.MentorCity", b =>
-                {
-                    b.HasOne("mentor_api.Models.City", "City")
-                        .WithMany("MentorCities")
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("mentor_api.Models.Mentor", "Mentor")
-                        .WithMany("MentorCities")
-                        .HasForeignKey("MentorId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("mentor_api.Models.Phone", b =>
                 {
                     b.HasOne("mentor_api.Models.Mentor", "Mentor")
@@ -235,19 +231,35 @@ namespace mentor_API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("mentor_api.Models.TeachableCities", b =>
+                {
+                    b.HasOne("mentor_api.Models.City", "City")
+                        .WithMany("MentorCities")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("mentor_api.Models.Mentor", "Mentor")
+                        .WithMany("TeachableCities")
+                        .HasForeignKey("MentorId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("mentor_api.Models.TeachingSpecialization", b =>
                 {
                     b.HasOne("mentor_api.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("mentor_api.Models.Mentor")
+                    b.HasOne("mentor_api.Models.Mentor", "Mentor")
                         .WithMany("TeachingSpecializations")
-                        .HasForeignKey("MentorId");
+                        .HasForeignKey("MentorId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("mentor_api.Models.Specialization", "Specialization")
                         .WithMany()
-                        .HasForeignKey("SpecializationId");
+                        .HasForeignKey("SpecializationId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
