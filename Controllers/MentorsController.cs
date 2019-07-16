@@ -1,15 +1,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using mentor_api.Data;
+using mentor_api.Data.Repositories.MentorRepo;
 using mentor_api.DTOs.DetailedDTOs;
 using mentor_api.DTOs.ForListDTOs;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace mentor_api.Controllers
 {
-    [Authorize]
     [Route("api/mentors")]
     [ApiController]
     public class MentorsController : ControllerBase
@@ -23,9 +21,19 @@ namespace mentor_api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetMentors()
+        public async Task<IActionResult> GetAllMentors()
         {
-            var mentors = await _repo.GetMentors();
+            var mentors = await _repo.GetAllMentors();
+
+            var mentorsToReturn = _mapper.Map<IEnumerable<MentorForListDTO>>(mentors);
+
+            return Ok(mentorsToReturn);
+        }
+
+        [HttpGet("category/{categoryId}")]
+        public async Task<IActionResult> GetMentors(int categoryId)
+        {
+            var mentors = await _repo.GetMentors(categoryId);
 
             var mentorsToReturn = _mapper.Map<IEnumerable<MentorForListDTO>>(mentors);
 

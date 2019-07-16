@@ -2,6 +2,10 @@
 using System.Text;
 using AutoMapper;
 using mentor_api.Data;
+using mentor_api.Data.DataSeeding;
+using mentor_api.Data.Repositories.AuthRepo;
+using mentor_api.Data.Repositories.MentorRepo;
+using mentor_api.Data.Repositories.TeachingsRepo;
 using mentor_api.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -39,6 +43,7 @@ namespace mentor_api
             services.AddTransient<Seed>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IMentorRepository, MentorRepository>();
+            services.AddScoped<ITeachingsRepository, TeachingsRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

@@ -9,29 +9,14 @@ using mentor_api.Data;
 namespace mentor_API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190708135843_UserAndMentorsInitial")]
-    partial class UserAndMentorsInitial
+    [Migration("20190711135154_MentorId")]
+    partial class MentorId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
-
-            modelBuilder.Entity("mentor_api.Models.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasAlternateKey("Name");
-
-                    b.ToTable("Categories");
-                });
 
             modelBuilder.Entity("mentor_api.Models.City", b =>
                 {
@@ -52,37 +37,18 @@ namespace mentor_API.Migrations
 
             modelBuilder.Entity("mentor_api.Models.Mentor", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description");
-
-                    b.Property<string>("TeachingInformation");
-
                     b.Property<int>("UserId");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Mentors");
-                });
-
-            modelBuilder.Entity("mentor_api.Models.Phone", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("MentorId");
+                    b.Property<string>("Description");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(8);
 
-                    b.HasKey("Id");
+                    b.Property<string>("TeachingInformation");
 
-                    b.HasIndex("MentorId");
+                    b.HasKey("UserId");
 
-                    b.ToTable("Phone");
+                    b.ToTable("Mentors");
                 });
 
             modelBuilder.Entity("mentor_api.Models.Picture", b =>
@@ -125,21 +91,6 @@ namespace mentor_API.Migrations
                     b.ToTable("Prices");
                 });
 
-            modelBuilder.Entity("mentor_api.Models.Specialization", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasAlternateKey("Name");
-
-                    b.ToTable("Specialization");
-                });
-
             modelBuilder.Entity("mentor_api.Models.TeachableCities", b =>
                 {
                     b.Property<int>("MentorId");
@@ -153,7 +104,37 @@ namespace mentor_API.Migrations
                     b.ToTable("TeachableCities");
                 });
 
-            modelBuilder.Entity("mentor_api.Models.TeachingSpecialization", b =>
+            modelBuilder.Entity("mentor_api.Models.Teachings.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("Name");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("mentor_api.Models.Teachings.Specialization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("Name");
+
+                    b.ToTable("Specializations");
+                });
+
+            modelBuilder.Entity("mentor_api.Models.Teachings.Teaching", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -162,15 +143,24 @@ namespace mentor_API.Migrations
 
                     b.Property<int>("MentorId");
 
-                    b.Property<int>("SpecializationId");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("MentorId");
 
-                    b.HasIndex("SpecializationId");
+                    b.ToTable("Teachings");
+                });
+
+            modelBuilder.Entity("mentor_api.Models.Teachings.TeachingSpecialization", b =>
+                {
+                    b.Property<int>("SpecializationId");
+
+                    b.Property<int>("TeachingId");
+
+                    b.HasKey("SpecializationId", "TeachingId");
+
+                    b.HasIndex("TeachingId");
 
                     b.ToTable("TeachingSpecializations");
                 });
@@ -207,14 +197,6 @@ namespace mentor_API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("mentor_api.Models.Phone", b =>
-                {
-                    b.HasOne("mentor_api.Models.Mentor", "Mentor")
-                        .WithMany("PhoneNumbers")
-                        .HasForeignKey("MentorId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("mentor_api.Models.Picture", b =>
                 {
                     b.HasOne("mentor_api.Models.Mentor", "Mentor")
@@ -234,7 +216,7 @@ namespace mentor_API.Migrations
             modelBuilder.Entity("mentor_api.Models.TeachableCities", b =>
                 {
                     b.HasOne("mentor_api.Models.City", "City")
-                        .WithMany("MentorCities")
+                        .WithMany("TeachableCities")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -244,21 +226,29 @@ namespace mentor_API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("mentor_api.Models.TeachingSpecialization", b =>
+            modelBuilder.Entity("mentor_api.Models.Teachings.Teaching", b =>
                 {
-                    b.HasOne("mentor_api.Models.Category", "Category")
+                    b.HasOne("mentor_api.Models.Teachings.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("mentor_api.Models.Mentor", "Mentor")
-                        .WithMany("TeachingSpecializations")
+                        .WithMany("Teachings")
                         .HasForeignKey("MentorId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
 
-                    b.HasOne("mentor_api.Models.Specialization", "Specialization")
-                        .WithMany()
+            modelBuilder.Entity("mentor_api.Models.Teachings.TeachingSpecialization", b =>
+                {
+                    b.HasOne("mentor_api.Models.Teachings.Specialization", "Specialization")
+                        .WithMany("Teachings")
                         .HasForeignKey("SpecializationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("mentor_api.Models.Teachings.Teaching", "Teaching")
+                        .WithMany("TeachingSpecializations")
+                        .HasForeignKey("TeachingId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

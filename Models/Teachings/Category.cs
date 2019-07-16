@@ -1,6 +1,6 @@
-namespace mentor_api.Models
+namespace mentor_api.Models.Teachings
 {
-    public class Specialization
+    public class Category
     {
         public int Id { get; set; }
         public string Name { get; set; }

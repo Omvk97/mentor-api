@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using mentor_api.Models;
+using mentor_api.Models.Teachings;
 using Newtonsoft.Json;
 
-namespace mentor_api.Data
+namespace mentor_api.Data.DataSeeding
 {
     public class Seed
     {
@@ -15,7 +16,7 @@ namespace mentor_api.Data
 
         public void SeedUsers()
         {
-            var userData = System.IO.File.ReadAllText("Data/UserDataSeed.json");
+            var userData = System.IO.File.ReadAllText("Data/DataSeeding/UserDataSeed.json");
             var users = JsonConvert.DeserializeObject<List<User>>(userData);
             foreach (var user in users)
             {
@@ -46,13 +47,13 @@ namespace mentor_api.Data
         }
         public void SeedMentors()
         {
-            var mentorData = System.IO.File.ReadAllText("Data/MentorDataSeed.json");
+            var mentorData = System.IO.File.ReadAllText("Data/DataSeeding/MentorDataSeed.json");
             var mentors = JsonConvert.DeserializeObject<List<Mentor>>(mentorData);
             foreach (var mentor in mentors)
             {
                 seedUser(mentor.User);
                 checkMentorCities(mentor.TeachableCities);
-                checkMentorSpecializations(mentor.TeachingSpecializations);
+                checkMentorSpecializations(mentor.Teachings);
                 _context.Mentors.Add(mentor);
             }
             _context.SaveChanges();
@@ -77,12 +78,12 @@ namespace mentor_api.Data
             _context.SaveChanges();
         }
 
-        private void checkMentorSpecializations(ICollection<TeachingSpecialization> specializations)
+        private void checkMentorSpecializations(ICollection<Teaching> teachings)
         {
-            foreach (var teachingSpecialization in specializations)
+            foreach (var teaching in teachings)
             {
-                checkCategory(teachingSpecialization.Category);
-                checkSpecialization(teachingSpecialization.Specialization);
+                checkCategory(teaching.Category);
+                checkSpecialization(teaching.TeachingSpecializations);
             }
             _context.SaveChanges();
         }
@@ -96,15 +97,18 @@ namespace mentor_api.Data
             else
                 category.Id = categoryInDatabase.Id;
         }
-        private void checkSpecialization(Specialization specialization)
+        private void checkSpecialization(ICollection<TeachingSpecialization> teachingSpecializations)
         {
-            specialization.Name = specialization.Name.ToLower();
+            foreach (var teachingSpecialization in teachingSpecializations)
+            {
+                teachingSpecialization.Specialization.Name = teachingSpecialization.Specialization.Name.ToLower();
 
-            var specializationInDatabase = _context.Specialization.FirstOrDefault(spe => spe.Name == specialization.Name);
-            if (specializationInDatabase == null)
-                _context.Specialization.Add(specialization);
-            else
-                specialization.Id = specializationInDatabase.Id;
+                var specializationInDatabase = _context.Specializations.FirstOrDefault(spe => spe.Name == teachingSpecialization.Specialization.Name);
+                if (specializationInDatabase == null)
+                    _context.Specializations.Add(teachingSpecialization.Specialization);
+                else
+                    teachingSpecialization.Specialization.Id = specializationInDatabase.Id;
+            }
         }
     }
 }

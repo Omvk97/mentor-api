@@ -1,4 +1,5 @@
 using mentor_api.Models;
+using mentor_api.Models.Teachings;
 using Microsoft.EntityFrameworkCore;
 
 namespace mentor_api.Data
@@ -13,7 +14,8 @@ namespace mentor_api.Data
         public DbSet<City> Cities { get; set; }
         public DbSet<TeachableCities> TeachableCities { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Specialization> Specialization { get; set; }
+        public DbSet<Specialization> Specializations { get; set; }
+        public DbSet<Teaching> Teachings { get; set; }
         public DbSet<TeachingSpecialization> TeachingSpecializations { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,8 +28,19 @@ namespace mentor_api.Data
             .HasForeignKey(mc => mc.MentorId);
             modelBuilder.Entity<TeachableCities>()
             .HasOne(mc => mc.City)
-            .WithMany(c => c.MentorCities)
+            .WithMany(c => c.TeachableCities)
             .HasForeignKey(mc => mc.CityId);
+
+            modelBuilder.Entity<TeachingSpecialization>()
+            .HasKey(ts => new { ts.SpecializationId, ts.TeachingId });
+            modelBuilder.Entity<TeachingSpecialization>()
+            .HasOne(ts => ts.Specialization)
+            .WithMany(s => s.Teachings)
+            .HasForeignKey(ts => ts.SpecializationId);
+            modelBuilder.Entity<TeachingSpecialization>()
+            .HasOne(ts => ts.Teaching)
+            .WithMany(s => s.TeachingSpecializations)
+            .HasForeignKey(ts => ts.TeachingId);
 
             // City unique postal code
             modelBuilder.Entity<City>()
@@ -36,7 +49,6 @@ namespace mentor_api.Data
             // Category unique name
             modelBuilder.Entity<Category>()
             .HasAlternateKey(category => category.Name);
-
 
             // Specialisation unique name
             modelBuilder.Entity<Specialization>()

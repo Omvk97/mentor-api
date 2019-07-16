@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using mentor_api.Data;
+using mentor_api.Data.Repositories.AuthRepo;
 using mentor_api.DTOs;
 using mentor_api.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -53,11 +53,26 @@ namespace mentor_api.Controllers
             if (userFromRepo == null)
                 return Unauthorized();
 
-            var claims = new[]
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var tokenDescriptor = MakeTokenDescriptorForUser(userFromRepo);
+
+            var token = tokenHandler.CreateToken(await tokenDescriptor);
+
+            return Ok(new
             {
-                new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.Name),
-                new Claim(ClaimTypes.Email, userFromRepo.Email)
+                token = tokenHandler.WriteToken(token)
+            });
+        }
+
+        private async Task<SecurityTokenDescriptor> MakeTokenDescriptorForUser(User user)
+        {
+            var claims = new[]
+           {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, await UserRole(user))
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
@@ -72,14 +87,19 @@ namespace mentor_api.Controllers
                 SigningCredentials = creds
             };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+            return tokenDescriptor;
+        }
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            return Ok(new {
-                token = tokenHandler.WriteToken(token)
-            });
-
+        private async Task<string> UserRole(User user)
+        {
+            if (await _repo.UserIsMentor(user.Id))
+            {
+                return "mentor";
+            }
+            else
+            {
+                return "user";
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using mentor_api.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace mentor_api.Data
+namespace mentor_api.Data.Repositories.AuthRepo
 {
     public class AuthRepository : IAuthRepository
     {
@@ -74,6 +74,11 @@ namespace mentor_api.Data
             {
                 return false;
             }
+        }
+
+        public async Task<bool> UserIsMentor(int userId)
+        {
+            return await _context.Mentors.AnyAsync(m => m.UserId == userId);
         }
     }
 }

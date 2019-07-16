@@ -7,6 +7,6 @@ namespace mentor_api.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string PostalCode { get; set; }
-        public ICollection<TeachableCities> MentorCities { get; set; }
+        public ICollection<TeachableCities> TeachableCities { get; set; }
     }
 }
